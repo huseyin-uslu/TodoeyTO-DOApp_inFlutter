@@ -11,6 +11,8 @@ class TasksScreen extends StatefulWidget {
 class _TasksScreenState extends State<TasksScreen> {
   bool stateCheckBox = false;
   TextDecoration? lineThrough = TextDecoration.none;
+  int _taskCount = 0;
+  List<String> _taskList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,13 @@ class _TasksScreenState extends State<TasksScreen> {
       backgroundColor: Colors.lightBlueAccent,
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.plus_one, color: Colors.white),
-        onPressed: () {},
+        onPressed: () {
+          setState(() {
+            _taskCount++;
+            _taskList.add(
+                "Hello guys I'm Huseyin dasdasdasd dddddddddddddddddddddddddd");
+          });
+        },
       ),
       body: SafeArea(
         child: Column(
@@ -31,8 +39,8 @@ class _TasksScreenState extends State<TasksScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const <Widget>[
-                    Flexible(
+                  children: <Widget>[
+                    const Flexible(
                       child: CircleAvatar(
                           radius: 30,
                           backgroundColor: Colors.white,
@@ -42,15 +50,17 @@ class _TasksScreenState extends State<TasksScreen> {
                             color: Colors.lightBlueAccent,
                           ))),
                     ),
-                    Text("Todoey App",
+                    const Text("Todoey App",
                         style: TextStyle(
                           fontSize: 50,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         )),
                     Text(
-                      "12 tasks",
-                      style: TextStyle(color: Colors.white, fontSize: 20),
+                      _taskCount != 0
+                          ? "$_taskCount tasks"
+                          : "$_taskCount task",
+                      style: const TextStyle(color: Colors.white, fontSize: 20),
                     ),
                   ],
                 ),
@@ -70,32 +80,63 @@ class _TasksScreenState extends State<TasksScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: ListView(
-                    children: [
-                      Row(children: [
-                        Text(
-                          "Do anything you want!",
-                          style: TextStyle(decoration: lineThrough!),
-                        ),
-                        Checkbox(
-                            value: stateCheckBox,
-                            onChanged: (bo) {
-                              setState(() {
-                                stateCheckBox = bo!;
-                                if (lineThrough == TextDecoration.lineThrough) {
-                                  lineThrough = TextDecoration.none;
-                                } else {
-                                  lineThrough = TextDecoration.lineThrough;
-                                }
-                              });
-                            })
-                      ]),
-                    ],
+                    children: getItemsOfToDoList(),
                   ),
                 ),
               ),
             )
           ],
         ),
+      ),
+    );
+  }
+
+  List<ItemOfToDoList> getItemsOfToDoList() {
+    List<ItemOfToDoList> list = [];
+    for (int i = 0; i < _taskCount; i++) {
+      list.add(ItemOfToDoList(
+        text: _taskList[i],
+      ));
+    }
+    return list;
+  }
+}
+
+class ItemOfToDoList extends StatefulWidget {
+  const ItemOfToDoList({Key? key, required this.text}) : super(key: key);
+  final String text;
+  @override
+  _ItemOfToDoListState createState() => _ItemOfToDoListState();
+}
+
+class _ItemOfToDoListState extends State<ItemOfToDoList> {
+  bool _isTicked = false;
+  TextDecoration _textDecoration = TextDecoration.none;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10).copyWith(bottom: 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(widget.text,
+              maxLines: 2,
+              style: TextStyle(
+                decoration: _textDecoration,
+              )),
+          Checkbox(
+            value: _isTicked,
+            onChanged: (bool? value) {
+              setState(() {
+                _isTicked = value!;
+                _textDecoration == TextDecoration.none
+                    ? _textDecoration = TextDecoration.lineThrough
+                    : _textDecoration = TextDecoration.none;
+              });
+            },
+          ),
+        ],
       ),
     );
   }
