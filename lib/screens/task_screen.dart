@@ -12,10 +12,13 @@ class _TasksScreenState extends State<TasksScreen> {
   bool stateCheckBox = false;
   TextDecoration? lineThrough = TextDecoration.none;
   int _taskCount = 0;
-  List<String> _taskList = [];
+  final List<String> _taskList = [];
+
+
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.lightBlueAccent,
       floatingActionButton: FloatingActionButton(
@@ -23,8 +26,9 @@ class _TasksScreenState extends State<TasksScreen> {
         onPressed: () {
           setState(() {
             _taskCount++;
-            _taskList.add(
-                "Hello guys I'm Huseyin dasdasdasd dddddddddddddddddddddddddd");
+            _taskList.add(textSeperaterForResizing(
+                context: context,
+                text: "Hello World I'dsadsadadsa"));
           });
         },
       ),
@@ -40,16 +44,14 @@ class _TasksScreenState extends State<TasksScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    const Flexible(
-                      child: CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Colors.white,
-                          child: Expanded(
-                              child: Icon(
-                            Icons.list,
-                            color: Colors.lightBlueAccent,
-                          ))),
-                    ),
+                    const CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Colors.white,
+                        child: Icon(
+                          Icons.list,
+                          size: 30,
+                          color: Colors.lightBlueAccent,
+                        )),
                     const Text("Todoey App",
                         style: TextStyle(
                           fontSize: 50,
@@ -91,6 +93,42 @@ class _TasksScreenState extends State<TasksScreen> {
     );
   }
 
+  String textSeperaterForResizing(
+      { required BuildContext context,
+        required String text}) {
+    List<String> textList = [];
+
+    double width = MediaQuery.of(context).size.width;
+    int maxLength = width ~/ 12;
+
+    String newText = "";
+    int partCharacters = 0;
+    int charactersLeft = text.length;
+
+    if (text.length > maxLength) {
+      while (charactersLeft > maxLength) {
+        charactersLeft -= maxLength;
+
+        if (charactersLeft > 5) {
+          textList
+              .add(text.substring(partCharacters, partCharacters + maxLength));
+        } else {
+          textList.add(text.substring(
+              partCharacters, partCharacters + maxLength + charactersLeft));
+        }
+        partCharacters += maxLength;
+      }
+
+      for (int i = 0; i < textList.length; i++) {
+        newText = newText + textList[i] + " -" + "\n";
+      }
+
+      return newText.substring(0, newText.length - 2);
+    } else {
+      return text;
+    }
+  }
+
   List<ItemOfToDoList> getItemsOfToDoList() {
     List<ItemOfToDoList> list = [];
     for (int i = 0; i < _taskCount; i++) {
@@ -121,7 +159,6 @@ class _ItemOfToDoListState extends State<ItemOfToDoList> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(widget.text,
-              maxLines: 2,
               style: TextStyle(
                 decoration: _textDecoration,
               )),
