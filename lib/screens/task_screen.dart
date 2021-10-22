@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:todoey_app/screens/add_task_screen.dart';
 
 class TasksScreen extends StatefulWidget {
   const TasksScreen({Key? key}) : super(key: key);
@@ -14,21 +15,20 @@ class _TasksScreenState extends State<TasksScreen> {
   int _taskCount = 0;
   final List<String> _taskList = [];
 
-
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.lightBlueAccent,
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.plus_one, color: Colors.white),
         onPressed: () {
           setState(() {
-            _taskCount++;
-            _taskList.add(textSeperaterForResizing(
+            showModalBottomSheet(
                 context: context,
-                text: "Hello World I'dsadsadadsa"));
+                builder: (context) => const AddTaskScreen(null));
+            // _taskCount++;
+            // _taskList.add(textSeperaterForResizing(
+            //     context: context, text: "Hello World I'dsadsadadsa"));
           });
         },
       ),
@@ -91,42 +91,6 @@ class _TasksScreenState extends State<TasksScreen> {
         ),
       ),
     );
-  }
-
-  String textSeperaterForResizing(
-      { required BuildContext context,
-        required String text}) {
-    List<String> textList = [];
-
-    double width = MediaQuery.of(context).size.width;
-    int maxLength = width ~/ 12;
-
-    String newText = "";
-    int partCharacters = 0;
-    int charactersLeft = text.length;
-
-    if (text.length > maxLength) {
-      while (charactersLeft > maxLength) {
-        charactersLeft -= maxLength;
-
-        if (charactersLeft > 5) {
-          textList
-              .add(text.substring(partCharacters, partCharacters + maxLength));
-        } else {
-          textList.add(text.substring(
-              partCharacters, partCharacters + maxLength + charactersLeft));
-        }
-        partCharacters += maxLength;
-      }
-
-      for (int i = 0; i < textList.length; i++) {
-        newText = newText + textList[i] + " -" + "\n";
-      }
-
-      return newText.substring(0, newText.length - 2);
-    } else {
-      return text;
-    }
   }
 
   List<ItemOfToDoList> getItemsOfToDoList() {
